@@ -52,10 +52,9 @@ export default function App() {
         
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
         
-        // 1. Auto-download
+        // 1. Generate filename
         const safeTarikh = data.tarikhMula ? data.tarikhMula.split('-').reverse().join('') : '';
         const fileName = `OPR_${data.namaProgram.replace(/[^a-z0-9]/gi, '_').toUpperCase()}_${safeTarikh}.pdf`;
-        pdf.save(fileName);
 
         // 2. Convert to base64 for GAS
         const pdfBase64 = pdf.output('datauristring').split(',')[1];
@@ -79,16 +78,17 @@ export default function App() {
 
           const result = await response.json();
           if (result.success) {
-            setSuccessMessage("PDF BERJAYA DIMUAT TURUN DAN DISIMPAN KE GOOGLE DRIVE.");
+            setSuccessMessage("PDF BERJAYA DIJANA DAN DISIMPAN KE GOOGLE DRIVE.");
+            setActiveTab('list'); // Navigate immediately
             setTimeout(() => {
-              setActiveTab('list');
               setSuccessMessage(null);
             }, 3000);
           } else {
             setErrorMessage("Ralat menyimpan ke pelayan: " + (result.message || "Ralat tidak diketahui"));
           }
         } else {
-          setSuccessMessage("PDF BERJAYA DIMUAT TURUN. (Simpanan pelayan diabaikan kerana GAS_WEBAPP_URL belum ditetapkan)");
+          setSuccessMessage("PDF BERJAYA DIJANA. (Simpanan pelayan diabaikan kerana GAS_WEBAPP_URL belum ditetapkan)");
+          setActiveTab('list'); // Navigate immediately
           setTimeout(() => setSuccessMessage(null), 3000);
         }
 
